@@ -1,0 +1,6 @@
+train:
+  _target_: src.datasets.ASVSpoofDataset
+  name: "train"
+val:
+  _target_: src.datasets.ASVSpoofDataset
+  name: "dev"
