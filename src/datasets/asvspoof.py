@@ -19,13 +19,12 @@ class ASVSpoofDataset(BaseDataset):
     def _create_index(self, name):
         index = []
         data_path = ROOT_PATH / "data" / "asvspoof" / name
-        data_path.mkdir(exist_ok=True, parents=True)
 
         with open(f"{data_path}.txt", "r", encoding="utf-8") as f:
             for i in tqdm(f):
                 record = i.strip().split()
-                record_path = data_path / f"{record[1]}.flac"
-                record_label = record[-1]
+                record_path = data_path / "flac" / f"{record[1]}.flac"
+                record_label = record[-1] == "spoof"
                 index.append({"path": str(record_path), "label": record_label})
 
         write_json(index, str(data_path / "index.json"))
@@ -34,4 +33,4 @@ class ASVSpoofDataset(BaseDataset):
 
     def load_object(self, path):
         waveform, sr = torchaudio.load(path)
-        return waveform
+        return waveform.squeeze(0)
