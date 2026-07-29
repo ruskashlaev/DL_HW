@@ -1,2 +1,24 @@
-train: null
-inference: null
+train:
+  data_object:
+    _target_: torch.nn.Sequential
+    _args_:
+      - _target_: torchaudio.transforms.MelSpectrogram
+        sample_rate: 16000
+        n_fft: 512
+        win_length: 320
+        hop_length: 160
+        power: 2.0
+        n_mels: 80
+      - _target_: torchaudio.transforms.AmplitudeToDB
+inference:
+  data_object:
+    _target_: torch.nn.Sequential
+    _args_:
+      - _target_: torchaudio.transforms.MelSpectrogram
+        sample_rate: 16000
+        n_fft: 512
+        win_length: 320
+        hop_length: 160
+        power: 2.0
+        n_mels: 80
+      - _target_: torchaudio.transforms.AmplitudeToDB
