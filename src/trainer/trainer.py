@@ -1,3 +1,6 @@
+import torch
+from tqdm.auto import tqdm
+
 from src.metrics.tracker import MetricTracker
 from src.trainer.base_trainer import BaseTrainer
 
@@ -52,7 +55,10 @@ class Trainer(BaseTrainer):
             metrics.update(loss_name, batch[loss_name].item())
 
         for met in metric_funcs:
-            metrics.update(met.name, met(**batch))
+            value = met(**batch)
+            if hasattr(met, "compute"):
+                continue
+            metrics.update(met.name, value)
         return batch
 
     def _log_batch(self, batch_idx, batch, mode="train"):
@@ -77,3 +83,23 @@ class Trainer(BaseTrainer):
         else:
             # Log Stuff
             pass
+
+    def _evaluation_epoch(self, epoch, part, dataloader):
+        self.is_train = False
+        self.model.eval()
+        self.evaluation_metrics.reset()
+        for met in self.metrics["inference"]:
+            if hasattr(met, "reset"):
+                met.reset()
+        with torch.no_grad():
+            for batch_idx, batch in tqdm(
+                enumerate(dataloader), desc=part, total=len(dataloader)
+            ):
+                batch = self.process_batch(batch, metrics=self.evaluation_metrics)
+            for met in self.metrics["inference"]:
+                if hasattr(met, "compute"):
+                    self.evaluation_metrics.update(met.name, met.compute())
+            self.writer.set_step(epoch * self.epoch_len, part)
+            self._log_scalars(self.evaluation_metrics)
+            self._log_batch(batch_idx, batch, part)
+        return self.evaluation_metrics.result()

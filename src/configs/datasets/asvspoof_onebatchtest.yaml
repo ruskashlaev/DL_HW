@@ -1,8 +1,10 @@
 train:
   _target_: src.datasets.ASVSpoofDataset
   name: "dev"
-  limit: 10
+  shuffle_index: True
+  limit: 100
 val:
   _target_: src.datasets.ASVSpoofDataset
   name: "dev"
-  limit: 10
+  shuffle_index: True
+  limit: 100
