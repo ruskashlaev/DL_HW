@@ -1,0 +1,5 @@
+_target_: src.model.LCNN
+n_class: 2
+n_mels: 80
+time_frames: 751
+dropout: 0.75
