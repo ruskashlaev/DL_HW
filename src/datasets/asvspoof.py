@@ -24,7 +24,7 @@ class ASVSpoofDataset(BaseDataset):
             for i in tqdm(f):
                 record = i.strip().split()
                 record_path = data_path / "flac" / f"{record[1]}.flac"
-                record_label = record[-1] == "spoof"
+                record_label = record[-1] == "bonafide"
                 index.append({"path": str(record_path), "label": record_label})
 
         write_json(index, str(data_path / "index.json"))

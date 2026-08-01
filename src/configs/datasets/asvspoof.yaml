@@ -4,3 +4,6 @@ train:
 val:
   _target_: src.datasets.ASVSpoofDataset
   name: "dev"
+eval:
+  _target_: src.datasets.ASVSpoofDataset
+  name: "eval"
